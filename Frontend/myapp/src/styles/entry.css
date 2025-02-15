@@ -1,0 +1,93 @@
+/* Full-page container */
+.e_container {
+    max-width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: white;
+    padding: 0;
+}
+
+  
+  /* Card container */
+  .e_card {
+    min-width: 95vw;
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 5vh;
+  }
+  
+  /* Header */
+  .e_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  
+  .e_title {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .e_date {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .e_buttonGroup {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Table container */
+  .e_tableContainer {
+    overflow-x: auto;
+  }
+  
+  /* Table styles */
+  .e_table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  /* Table header */
+  .e_tableHeader {
+    background-color: #e5e7eb;
+  }
+  
+  .e_tableHead {
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #ddd;
+  }
+  
+  /* Table row and cell */
+  .e_tableRow {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .e_tableCell {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    vertical-align: middle;
+  }
+  
+  /* Input field */
+  .e_input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    outline: none;
+    display: block;
+    margin: 0 auto;
+  }
+  
