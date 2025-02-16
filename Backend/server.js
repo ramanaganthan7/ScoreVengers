@@ -1,6 +1,9 @@
 const express = require("express");
 const { Pool } = require("pg");
 const cors = require("cors");
+const sendMail = require("./mailer");
+const getAIResponse = require("./chat_ai_function");
+
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
@@ -117,9 +120,6 @@ app.post("/createexam", async (req, res) => {
             regno VARCHAR(20) PRIMARY KEY,
             name VARCHAR(100),
             Eng_Math INT DEFAULT 0,
-            Lin_Alg INT DEFAULT 0,
-            Calculus INT DEFAULT 0,
-            Prob_Stats INT DEFAULT 0,
             Dig_Logic INT DEFAULT 0,
             COA INT DEFAULT 0,
             PDS INT DEFAULT 0,
@@ -195,14 +195,13 @@ app.post("/createexam", async (req, res) => {
             for (const student of students) {
                 await pool.query(
                     `UPDATE ${examName} 
-                     SET eng_math = $1, lin_alg = $2, calculus = $3, prob_stats = $4, 
-                         dig_logic = $5, coa = $6, pds = $7, algo = $8, toc = $9, 
-                         comp_des = $10, os = $11, dbms = $12, cn = $13, 
-                         maxobtained = $14, maxmark = $15 
-                     WHERE regno = $16`,
+                     SET eng_math = $1, 
+                         dig_logic = $2, coa = $3, pds = $4, algo = $5, toc = $6, 
+                         comp_des = $7, os = $8, dbms = $9, cn = $10, 
+                         maxobtained = $11, maxmark = $12 
+                     WHERE regno = $13`,
                     [
-                      student.eng_math, student.lin_alg, student.calculus, 
-                      student.prob_stats, student.dig_logic, student.coa, 
+                      student.eng_math, student.dig_logic, student.coa, 
                       student.pds, student.algo, student.toc, 
                       student.comp_des, student.os, student.dbms, 
                       student.cn, student.maxobtained, student.maxmark, 
@@ -227,7 +226,101 @@ app.get("/students", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
+  const examData = [];
+/*
+app.get('/exam-results/:name', async (req, res) => {
+  const { name } = req.params;
+  
+  try {
+      const examQuery = 'SELECT exam_name FROM exam';
+      const examResults = await pool.query(examQuery);
+      const examNames = examResults.rows.map(row => row.exam_name);
 
+      let allExamData = [];
+      
+
+      for (const examName of examNames) {
+          const query = `SELECT * FROM ${examName} WHERE name = $1`;
+          const result = await pool.query(query, [name]);
+
+          if (result.rows.length > 0) {
+              allExamData.push({
+                  exam_name: examName,
+                  data: result.rows[0]  
+              });
+          }
+      }
+      examData.length = 0;
+      examData.push(...allExamData);
+
+      res.json({ success: true, exams: allExamData });
+
+  } catch (error) {
+      console.error('Error fetching exam results:', error);
+      res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+*/
+app.get("/exam-results/:name", async (req, res) => {
+  const { name } = req.params;
+
+  try {
+    const examQuery = "SELECT exam_name FROM exam";
+    const examResults = await pool.query(examQuery);
+    const examNames = examResults.rows.map((row) => row.exam_name);
+
+    let allExamData = [];
+
+    for (const examName of examNames) {
+      const query = `SELECT * FROM ${examName} WHERE name = $1`;
+      const result = await pool.query(query, [name]);
+
+      if (result.rows.length > 0) {
+        allExamData.push({
+          exam_name: examName,
+          data: result.rows[0],
+        });
+      }
+    }
+
+    if (allExamData.length === 0) {
+      return res.status(404).json({ success: false, message: "No exam data found for the student." });
+    }
+
+    // Get AI-generated feedback
+    const aiFeedback = await getAIResponse({ success: true, exams: allExamData });
+
+    res.json({ success: true, exams: allExamData, feedback: aiFeedback });
+
+  } catch (error) {
+    console.error("Error fetching exam results:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+
+//mail 
+app.post("/send-email", async (req, res) => {
+  const { testName, date } = req.body;
+
+  if (!testName || !date) {
+    return res.status(400).json({ message: "Test Name and Date are required!" });
+  }
+
+  try {
+    // Fetch student emails
+    const result = await pool.query("SELECT email FROM student");
+    const studentEmails = result.rows.map((row) => row.email); // Extract emails
+
+    await sendMail(testName, date, studentEmails); // Pass emails to sendMail
+    res.status(200).json({ message: "Email sent successfully!" });
+  } catch (error) {
+    console.error("Email sending error:", error);
+    res.status(500).json({ message: "Error sending email", error: error.toString() });
+  }
+});
+
+console.log(examData,'outside');
 
 
 

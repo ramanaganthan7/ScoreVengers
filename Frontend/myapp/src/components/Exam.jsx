@@ -64,6 +64,52 @@ export default function Exam() {
   };
   
 
+const handle_email = async (e_name, e_date) => {
+  const toastId = toast.loading("Sending result notifications...");
+
+  try {
+    const response = await fetch("http://localhost:3001/send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        testName: e_name,
+        date: e_date,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      toast.update(toastId, {
+        render: "Result notifications sent successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      console.log("Result Published:", data.message);
+    } else {
+      toast.update(toastId, {
+        render: data.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+      console.error("Error publishing result:", data.message);
+    }
+  } catch (error) {
+    toast.update(toastId, {
+      render: "Request failed. Try again later.",
+      type: "error",
+      isLoading: false,
+      autoClose: 3000,
+    });
+    console.error("Request failed:", error);
+  }
+};
+
+
 
   return (
     <div>
@@ -83,7 +129,7 @@ export default function Exam() {
               </CardContent>
               <CardFooter className="flex gap-2 mt-auto">
                 <Button variant="outline" className="flex-1" onClick={() => handle_update(test.exam_name)}>Update Marks</Button>
-                <Button className="flex-1">Publish Result</Button>
+                <Button className="flex-1" onClick={() => handle_email(test.exam_name, test.date)}>Publish Result</Button>
               </CardFooter>
             </Card>
           ))}

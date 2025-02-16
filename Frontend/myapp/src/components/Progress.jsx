@@ -1,98 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useLocation } from "react-router-dom";
 import "../styles/progress.css";
-
-const performanceData = [
-  {
-    test: "Mock Test 1",
-    percentage: 75,
-    subjects: {
-      Math: 80,
-      Science: 70,
-      English: 75,
-      History: 72,
-      Geography: 78,
-    },
-  },
-  {
-    test: "Mock Test 2",
-    percentage: 82,
-    subjects: {
-      Math: 85,
-      Science: 80,
-      English: 82,
-      History: 79,
-      Geography: 84,
-    },
-  },
-  {
-    test: "Mock Test 3",
-    percentage: 78,
-    subjects: {
-      Math: 75,
-      Science: 82,
-      English: 77,
-      History: 80,
-      Geography: 76,
-    },
-  },
-  {
-    test: "Mock Test 5",
-    percentage: 85,
-    subjects: {
-      Math: 88,
-      Science: 85,
-      English: 83,
-      History: 84,
-      Geography: 85,
-    },
-  },
-  {
-    test: "Mock Test 6",
-    percentage: 90,
-    subjects: {
-      Math: 88,
-      Science: 85,
-      English: 83,
-      History: 84,
-      Geography: 85,
-    },
-  },
-  
-
-];
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import p1 from "../assets/ai.gif";
 
 export default function Progress() {
   const [selectedTest, setSelectedTest] = useState("all");
+  const [examData, setExamData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [feedback, setFeedback] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
 
+  const location = useLocation();
+    const studentName = location.state?.studentName || "Unknown";
+    const role = location.state?.role || "User"; // Get role
+    let name= localStorage.getItem("userName");
+
+    if (role=='admin'){
+      name = studentName;
+
+        toast.info(`Progress of the Student ${studentName}`, {
+          autoClose: 2000, // Toast stays for 5 seconds (5000ms)
+          position: "top-right", // Optional: Change position if needed
+          pauseOnHover: true, // Optional: Pause on hover
+        });
+      }
+        
+
+  useEffect(() => {
+    // Show loading toast
+    toast.loading("Loading data...");
+    
+    
+
+    fetch(`http://localhost:3001/exam-results/${name}`)
+      .then((res) => res.json())
+      .then((apiResponse) => {
+        if (apiResponse.success && apiResponse.exams.length > 0) {
+          const formattedData = apiResponse.exams.map((exam) => ({
+            test: exam.exam_name,
+            percentage: (exam.data.maxobtained / exam.data.maxmark) * 100, // Percentage Calculation
+            subjects: { ...exam.data }, // Copy subject marks
+          }));
+
+          setExamData(formattedData);
+          console.log(apiResponse.feedback,'from ai');
+          setFeedback(apiResponse.feedback);
+        } else {
+          setExamData([]);
+        }
+      })
+      .catch(() => {
+        setExamData([]);
+      })
+      .finally(() => {
+        toast.dismiss();
+        setLoading(false);
+      });
+  }, []);
+
+  // Function to get subject data for Pie Chart
   const getSubjectData = (testId) => {
+    const subjects = ["eng_math", "dig_logic", "coa", "pds", "algo", "toc", "comp_des", "os", "dbms", "cn"];
+
     if (testId === "all") {
-      const subjects = Object.keys(performanceData[0].subjects);
+      // Calculate average marks for each subject
       return subjects.map((subject, index) => {
-        const total = performanceData.reduce((sum, test) => sum + test.subjects[subject], 0);
-        const average = total / performanceData.length;
-        return {
-          subject,
-          value: average,
-          fill: `hsl(var(--chart-${index + 1}))`,
-        };
+        const total = examData.reduce((sum, test) => sum + (test.subjects[subject] || 0), 0);
+        const average = total / examData.length;
+        return { subject, value: average, fill: `hsl(var(--chart-${index + 1}))` };
       });
     } else {
-      const test = performanceData.find((t) => t.test === testId);
+      // Get subject marks for selected test
+      const test = examData.find((t) => t.test === testId);
       if (!test) return [];
-      return Object.entries(test.subjects).map(([subject, value], index) => ({
+      return subjects.map((subject, index) => ({
         subject,
-        value,
+        value: test.subjects[subject] || 0,
         fill: `hsl(var(--chart-${index + 1}))`,
       }));
     }
   };
 
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
+
   return (
-    <div>
     <div className="p_container">
+            <ToastContainer position="top-center" autoClose={3000} />
+
+      {/* Dropdown Selection */}
       <div className="w-full max-w-[200px] relative">
         <Select value={selectedTest} onValueChange={setSelectedTest} defaultValue="all">
           <SelectTrigger>
@@ -100,7 +102,7 @@ export default function Progress() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">ALL</SelectItem>
-            {performanceData.map((test) => (
+            {examData.map((test) => (
               <SelectItem key={test.test} value={test.test}>
                 {test.test}
               </SelectItem>
@@ -109,58 +111,95 @@ export default function Progress() {
         </Select>
       </div>
 
-      {/* Responsive Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full w-full p_con2 mt-10">
-        <Card className="w-full md:w-[50vw] max-w-[580px] h-fit aspect-square">
-          <CardHeader>
-            <CardTitle>Performance Trend</CardTitle>
-            <CardDescription>Marks percentage across mock tests</CardDescription>
-          </CardHeader>
-          <CardContent className="h-fit flex justify-center items-center p-2">
+      {/* Loading State */}
+      {loading ? (
+        <div className="text-center text-lg font-semibold mt-10">Loading data...</div>
+      ) : examData.length === 0 ? (
+        <div className="text-center text-lg font-semibold mt-10">No data available</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full w-full p_con2 mt-10">
+          {/* Line Chart - Performance Trend */}
+          <Card className="w-full md:w-[50vw] max-w-[580px] h-fit aspect-square">
+            <CardHeader>
+              <CardTitle>Performance Trend</CardTitle>
+              <CardDescription>Marks percentage across mock tests</CardDescription>
+            </CardHeader>
+            <CardContent className="h-fit flex justify-center items-center p-2">
+              <ResponsiveContainer width="100%" minHeight={250} height={400}>
+                <LineChart data={examData}>
+                  <XAxis dataKey="test" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="percentage" stroke="hsl(var(--primary))" strokeWidth={2} />
+                  {/* Highlight Selected Test (Dot Only) */}
+                  {selectedTest !== "all" && (
+                    <Line
+                      type="monotone"
+                      dataKey="percentage"
+                      stroke="transparent"
+                      dot={({ cx, cy, payload }) =>
+                        payload.test === selectedTest ? (
+                          <circle cx={cx} cy={cy} r={6} stroke="red" strokeWidth={2} fill="white" />
+                        ) : null
+                      }
+                    />
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
 
-            <ResponsiveContainer width="100%" minHeight={250} height={400}>
-              <LineChart data={performanceData}>
-                <XAxis dataKey="test" />
-                <YAxis domain={[0, 100]} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="percentage"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          {/* Pie Chart - Subject Distribution */}
+          <Card className="w-full md:w-[50vw] max-w-[580px] h-fit aspect-square">
+            <CardHeader>
+              <CardTitle>Subject Distribution</CardTitle>
+              <CardDescription>
+                {selectedTest === "all"
+                  ? "Average marks by subject across all tests"
+                  : `Subject marks for ${selectedTest}`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="h-fit flex justify-center items-center p-2">
+              <ResponsiveContainer width="100%" minHeight={250} height={400}>
+                <PieChart>
+                  <Pie
+                    data={getSubjectData(selectedTest)}
+                    dataKey="value"
+                    nameKey="subject"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    label={({ subject, value }) => `${subject}: ${value.toFixed(1)}`}
+                  />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
-        <Card className="w-full md:w-[50vw] max-w-[580px] h-fit aspect-square">
-          <CardHeader>
-            <CardTitle>Subject Distribution</CardTitle>
-            <CardDescription>
-              {selectedTest === "all"
-                ? "Average marks by subject across all tests"
-                : `Subject marks for ${selectedTest}`}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="h-fit flex justify-center items-center p-2">
-          <ResponsiveContainer width="100%" minHeight={250} height={400}>
-              <PieChart>
-                <Pie
-                  data={getSubjectData(selectedTest)}
-                  dataKey="value"
-                  nameKey="subject"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={120}
-                  label={({ subject, value }) => `${subject}: ${value.toFixed(1)}%`}
-                />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
+    <div>
+      {/* Floating Feedback Button */}
+      <button className="feedback-button" onClick={togglePopup}>
+        <img src={p1} alt="Feedback" className="feedback-gif" />
+      </button>
+
+      {/* Pop-up Window */}
+      {showPopup && (
+        <div className="popup">
+          <button className="close-btn" onClick={togglePopup}>×</button>
+          <h3>Feedback</h3>
+          {feedback ? (
+            <div className="feedback-content">
+              <p> {feedback}</p>
+              
+            </div>
+          ) : (
+            <p>Loading feedback...</p>
+          )}
+        </div>
+      )}
     </div>
     </div>
   );
