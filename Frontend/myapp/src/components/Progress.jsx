@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Line, LineChart, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import "../styles/progress.css";
+import Navbar from "./Navbar";
 
 const performanceData = [
   {
@@ -91,6 +92,8 @@ export default function Progress() {
   };
 
   return (
+    <div>
+      <Navbar />
     <div className="p_container">
       <div className="w-full max-w-[200px] relative">
         <Select value={selectedTest} onValueChange={setSelectedTest} defaultValue="all">
@@ -160,6 +163,7 @@ export default function Progress() {
           </CardContent>
         </Card>
       </div>
+    </div>
     </div>
   );
 }

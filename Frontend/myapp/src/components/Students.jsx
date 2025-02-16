@@ -3,6 +3,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import "../styles/students.css";
 
+
 export default function Students() {
   // Sample student data array
   const students = [
@@ -14,6 +15,7 @@ export default function Students() {
   ];
 
   return (
+    <div>
     <div className="s_container">
       <div className="s_card">
 
@@ -39,6 +41,7 @@ export default function Students() {
         </Table>
       </div>
      </div>
+    </div>
     </div>
   );
 }

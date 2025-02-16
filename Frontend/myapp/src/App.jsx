@@ -1,48 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from "@/components/ui/button";
-import Login from './components/Login'
-import Exam from './components/Exam'
-import Dashboard from './components/Dashboard';
-import Progress from './components/Progress';
-import Students from './components/Students';
-import Navbar from './components/Navbar';
-import Entry from './components/Entry';
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useState } from "react";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Progress from "./components/Progress";
+import Exam from "./components/Exam";
+import Students from "./components/Students";
+import Entry from "./components/Entry";
+import Navbar from "./components/Navbar";
+import "./App.css";
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [name, setName] = useState(""); // State to store user name
 
   return (
-    <>
-    <Navbar></Navbar>
-    
-      <Students></Students>
-      
-
-   
-
-
-
-
-
-
-   { /*
-   <Login></Login>
-      <Dashboard> </Dashboard>
-       
-<Exam></Exam>
-      <Entry></Entry>
-    <Progress></Progress>
-
-
-
-
-    */}
-      </>
-
-       
-  )
+    <Router>
+      <MainContent name={name} setName={setName} />
+    </Router>
+  );
 }
 
-export default App
+function MainContent({ name, setName }) {
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/";
+  console.log(name,'app.jsx');
+
+  return (
+    
+    <>
+      {!hideNavbar && <Navbar name={name} />} {/* Show Navbar only if not on login */}
+
+      <Routes>
+        <Route path="/" element={<Login setName={setName} />} /> {/* Pass setName */}
+        <Route path="/admin" element={<Dashboard />} />
+        <Route path="/student" element={<Progress />} />
+        <Route path="/exam" element={<Exam />} />
+        <Route path="/entry" element={<Entry />} />
+        <Route path="/students" element={<Students />} />
+      </Routes>
+    </>
+  );
+}
+
+export default App;

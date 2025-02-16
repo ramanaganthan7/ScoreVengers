@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import "../styles/exam.css";
+import Navbar from "./Navbar";
 
 export default function Exam() {
   const [tests, setTests] = useState([]);
@@ -24,6 +25,7 @@ export default function Exam() {
 
   return (
     <div>
+      <Navbar />
     <h1 className=" flex justify-start text-2xl font-bold mb-9">MOCK TEST ENTRY</h1>
     <div className="container mx-auto p-6 exam-con">
       

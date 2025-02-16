@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import "../styles/Entry.css"
+import Navbar from "./Navbar"
 
 export default function Entry() {
   const [isEditing, setIsEditing] = useState(false)
@@ -52,6 +53,8 @@ export default function Entry() {
   }
 
   return (
+    <div>
+      <Navbar></Navbar>
     <div className="e_container ">
       <div className="e_card">
         <div className="e_header">
@@ -108,6 +111,7 @@ export default function Entry() {
           </Table>
         </div>
       </div>
+    </div>
     </div>
   )
 }
