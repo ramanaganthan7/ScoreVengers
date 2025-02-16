@@ -8,13 +8,9 @@ const Navbar = ({ name }) => {
       <div className="n_container">
         <div className="n_nav-content">
           <div className="n_logo-container">
-            <img
-              src={"./logo.png"}
-              alt="Logo"
-              width={40}
-              height={40}
-              className="n_logo-image"
-            />
+          <span className="text-2xl font-bold tracking-wide text-[rgb(0,0,128)]">
+          ScoreVengers
+        </span>
           </div>
           <div className="n_user-greeting">
             <span className="n_greeting-text">
