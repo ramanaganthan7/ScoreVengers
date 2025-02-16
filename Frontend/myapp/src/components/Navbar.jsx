@@ -2,7 +2,6 @@ import '../Styles/navbar.css';
 import React from "react";
 
 const Navbar = ({ name }) => {
-  console.log(name, 'navbar.jsx'); // Debugging log
 
   return (
     <nav className="n_navbar">
@@ -19,7 +18,7 @@ const Navbar = ({ name }) => {
           </div>
           <div className="n_user-greeting">
             <span className="n_greeting-text">
-              Hello, <span className="n_greeting-name">{name || 'Autonomous'}</span>
+              Hello, <span className="n_greeting-name">{localStorage.getItem("userName")|| 'Autonomous'}</span>
             </span>
           </div>
         </div>

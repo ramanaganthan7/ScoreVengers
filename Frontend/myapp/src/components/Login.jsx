@@ -29,6 +29,9 @@ export default function Login({setName}) {
 
           setTimeout(() => {
               if (role === "admin") {
+                console.log("Redirecting to admin page");
+                localStorage.setItem("userName", loginStatus.name); // Store in localStorage
+
                   navigate("/admin"); // Redirect to Admin page
               } else if (role === "student") {
                   navigate("/student"); // Redirect to Student page

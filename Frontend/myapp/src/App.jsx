@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import Progress from "./components/Progress";
@@ -9,28 +9,18 @@ import Entry from "./components/Entry";
 import Navbar from "./components/Navbar";
 import "./App.css";
 
-function App() {
-  const [name, setName] = useState(""); // State to store user name
+function AppContent({ name, setName }) {
+  const location = useLocation(); 
+
+  useEffect(() => {
+    localStorage.setItem("userName", name);
+  }, [name]);
 
   return (
-    <Router>
-      <MainContent name={name} setName={setName} />
-    </Router>
-  );
-}
-
-function MainContent({ name, setName }) {
-  const location = useLocation();
-  const hideNavbar = location.pathname === "/";
-  console.log(name,'app.jsx');
-
-  return (
-    
     <>
-      {!hideNavbar && <Navbar name={name} />} {/* Show Navbar only if not on login */}
-
+      {location.pathname !== "/" && <Navbar name={name} />}
       <Routes>
-        <Route path="/" element={<Login setName={setName} />} /> {/* Pass setName */}
+        <Route path="/" element={<Login setName={setName} />} />
         <Route path="/admin" element={<Dashboard />} />
         <Route path="/student" element={<Progress />} />
         <Route path="/exam" element={<Exam />} />
@@ -38,6 +28,16 @@ function MainContent({ name, setName }) {
         <Route path="/students" element={<Students />} />
       </Routes>
     </>
+  );
+}
+
+function App() {
+  const [name, setName] = useState(localStorage.getItem("userName") || "");
+
+  return (
+    <Router>
+      <AppContent name={name} setName={setName} />
+    </Router>
   );
 }
 
