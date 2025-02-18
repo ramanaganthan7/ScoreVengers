@@ -8,13 +8,14 @@ import { Label } from "@/components/ui/label";
 import "../styles/exam.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Exam() {
   const [tests, setTests] = useState([]);
   const [newTitle, setNewTitle] = useState("");
   const [newDate, setNewDate] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false); // State to manage dialog visibility
+  const [newMode, setNewMode] = useState("Online"); // Default mode
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:3001/exams")
@@ -22,6 +23,7 @@ export default function Exam() {
       .then((data) => setTests(data))
       .catch((error) => console.error("Error fetching exams:", error));
   }, []);
+  console.log(tests);
 
   const handleCreateTest = async () => {
     if (newTitle && newDate) {
@@ -32,6 +34,7 @@ export default function Exam() {
           body: JSON.stringify({
             exam_name: newTitle,
             exam_date: newDate,
+            exam_mode: newMode,
             creator: localStorage.getItem("userName"),
           }),
         });
@@ -39,11 +42,12 @@ export default function Exam() {
         const data = await response.json();
 
         if (response.ok) {
-          setIsDialogOpen(false); // Close dialog
-          toast.success(data.message); // Show success toast
+          setIsDialogOpen(false);
+          toast.success(data.message);
           setNewTitle("");
           setNewDate("");
-          setTimeout(() => window.location.reload(), 1500); // Refresh page after 1.5s
+          setNewMode("Online"); // Reset mode to default
+          setTimeout(() => window.location.reload(), 1500);
         } else {
           toast.error(data.message || "Failed to create exam");
         }
@@ -62,55 +66,50 @@ export default function Exam() {
     navigate("/entry", { state: { examName } });
     console.log(examName);
   };
+  const handle_email = async (e_name, e_date) => {
+    const toastId = toast.loading("Sending result notifications...");
   
-
-const handle_email = async (e_name, e_date) => {
-  const toastId = toast.loading("Sending result notifications...");
-
-  try {
-    const response = await fetch("http://localhost:3001/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        testName: e_name,
-        date: e_date,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      toast.update(toastId, {
-        render: "Result notifications sent successfully!",
-        type: "success",
-        isLoading: false,
-        autoClose: 3000,
+    try {
+      const response = await fetch("http://localhost:3001/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          testName: e_name,
+          date: e_date,
+        }),
       });
-      console.log("Result Published:", data.message);
-    } else {
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        toast.update(toastId, {
+          render: "Result notifications sent successfully!",
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        console.log("Result Published:", data.message);
+      } else {
+        toast.update(toastId, {
+          render: data.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        console.error("Error publishing result:", data.message);
+      }
+    } catch (error) {
       toast.update(toastId, {
-        render: data.message,
+        render: "Request failed. Try again later.",
         type: "error",
         isLoading: false,
         autoClose: 3000,
       });
-      console.error("Error publishing result:", data.message);
+      console.error("Request failed:", error);
     }
-  } catch (error) {
-    toast.update(toastId, {
-      render: "Request failed. Try again later.",
-      type: "error",
-      isLoading: false,
-      autoClose: 3000,
-    });
-    console.error("Request failed:", error);
-  }
-};
-
-
-
+  };
   return (
     <div>
       <h1 className="flex justify-start text-2xl font-bold mb-9">MOCK TEST ENTRY</h1>
@@ -123,8 +122,7 @@ const handle_email = async (e_name, e_date) => {
               </CardHeader>
               <CardContent className="flex-grow">
                 <p className="text-muted-foreground">Date: {test.date}</p>
-              </CardContent>
-              <CardContent className="flex-grow">
+                <p className="text-muted-foreground">Mode: {test.mode}</p>
                 <p className="text-muted-foreground">Creator: {test.creator}</p>
               </CardContent>
               <CardFooter className="flex gap-2 mt-auto">
@@ -149,16 +147,18 @@ const handle_email = async (e_name, e_date) => {
               <div className="grid gap-4 py-4">
                 <div className="grid gap-2">
                   <Label htmlFor="title">Test Title</Label>
-                  <Input
-                    id="title"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="Enter test title"
-                  />
+                  <Input id="title" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Enter test title" />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="date">Test Date</Label>
                   <Input id="date" type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="mode">Mode</Label>
+                  <select id="mode" value={newMode} onChange={(e) => setNewMode(e.target.value)} className="border p-2 rounded">
+                    <option value="Online">Online</option>
+                    <option value="Offline">Offline</option>
+                  </select>
                 </div>
               </div>
               <Button onClick={handleCreateTest}>Create Test</Button>

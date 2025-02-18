@@ -81,7 +81,7 @@ app.post("/login", async (req, res) => {
 // Get all exams
 app.get("/exams", async (req, res) => {
     try {
-      const result = await pool.query("SELECT exam_name, date , creator FROM exam");
+      const result = await pool.query("SELECT exam_name, date , creator, mode FROM exam");
       res.json(result.rows);
     } catch (err) {
       console.error(err);
@@ -92,10 +92,10 @@ app.get("/exams", async (req, res) => {
 
 app.post("/createexam", async (req, res) => {
     try {
-      const { exam_name, exam_date, creator } = req.body;
-      console.log(exam_date, exam_name, creator);
+      const { exam_name, exam_date,exam_mode, creator } = req.body;
+      console.log(exam_date, exam_name,exam_mode, creator);
       
-      if (!exam_name || !exam_date) {
+      if (!exam_name || !exam_date || !exam_mode) {
         return res.status(400).json({ error: "All fields are required" });
       }
   
@@ -106,8 +106,8 @@ app.post("/createexam", async (req, res) => {
   
         // Insert into exam table
         await client.query(
-          "INSERT INTO exam (exam_name, creator, date) VALUES ($1, $2, $3)",
-          [exam_name, creator, exam_date]
+          "INSERT INTO exam (exam_name, creator, date,mode) VALUES ($1, $2, $3,$4)",
+          [exam_name, creator, exam_date, exam_mode]
         );
   
         // Format the exam table name to avoid SQL injection issues
@@ -227,7 +227,7 @@ app.get("/students", async (req, res) => {
     }
   });
   const examData = [];
-/*
+  /*
 app.get('/exam-results/:name', async (req, res) => {
   const { name } = req.params;
   
@@ -261,6 +261,7 @@ app.get('/exam-results/:name', async (req, res) => {
   }
 });
 */
+
 app.get("/exam-results/:name", async (req, res) => {
   const { name } = req.params;
 
@@ -297,7 +298,6 @@ app.get("/exam-results/:name", async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
-
 
 //mail 
 app.post("/send-email", async (req, res) => {
