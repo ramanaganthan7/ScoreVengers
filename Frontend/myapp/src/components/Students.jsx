@@ -17,7 +17,7 @@ export default function Students() {
 
   // Handle row click
   const handleRowClick = (name) => {
-    navigate("/student", { state: { studentName: name, role: "admin" } }); // Pass student name and "admin"
+    navigate("/progress", { state: { studentName: name, role: "admin" } }); // Pass student name and "admin"
   };
 
   return (

@@ -8,6 +8,9 @@ import Students from "./components/Students";
 import Entry from "./components/Entry";
 import Navbar from "./components/Navbar";
 import "./App.css";
+import OnlineTest from "./components/OnlineTest";
+import DashboardStudent from "./components/DashboardStudent";
+import MockTest from "./components/MockTest";
 
 function AppContent({ name, setName }) {
   const location = useLocation(); 
@@ -22,10 +25,14 @@ function AppContent({ name, setName }) {
       <Routes>
         <Route path="/" element={<Login setName={setName} />} />
         <Route path="/admin" element={<Dashboard />} />
-        <Route path="/student" element={<Progress />} />
+        <Route path="/progress" element={<Progress />} />
         <Route path="/exam" element={<Exam />} />
         <Route path="/entry" element={<Entry />} />
         <Route path="/students" element={<Students />} />
+        <Route path="/online-test" element={<OnlineTest />} />
+        <Route path="/student" element={<DashboardStudent />} />
+        <Route path="/mocktest" element={<MockTest />} />
+
       </Routes>
     </>
   );

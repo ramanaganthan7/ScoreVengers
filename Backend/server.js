@@ -320,9 +320,58 @@ app.post("/send-email", async (req, res) => {
   }
 });
 
-console.log(examData,'outside');
+app.get("/online", async (req, res) => {
+  try {
+      const query = "SELECT exam_name, creator, date FROM exam WHERE mode = 'Online'";
+      const { rows } = await pool.query(query);
+      res.json(rows);
+  } catch (error) {
+      console.error("Error fetching exams:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
+app.get("/conduct", async (req, res) => {
+  try {
+      const query = "SELECT subject , question from questions";
+      const { rows } = await pool.query(query);
+      res.json(rows);
+  } catch (error) {
+      console.error("Error fetching exams:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
+//update online test
+
+app.post("/submit-mocktest", async (req, res) => {
+  try {
+    const { name, examName, scores } = req.body;
+    
+    if (!name || !examName || !scores) {
+      return res.status(400).json({ message: "Missing required fields." });
+    }
+
+    console.log("Received mock test submission:", { name, examName, scores });
+
+    // Update the database with subject scores and calculate max obtained score
+    const query = `
+      UPDATE ${examName} 
+      SET TOC = ${scores.TOC}, PDS = ${scores.PDS}, Algo = ${scores.Algo}, CN = ${scores.CN}, COA = ${scores.COA}, 
+          Comp_Des = ${scores.Comp_Des}, DBMS = ${scores.DBMS}, Dig_Logic = ${scores.Dig_Logic}, Eng_Math = ${scores.Eng_Math}, OS = ${scores.OS}, 
+          maxobtained = ${scores.TOC + scores.PDS + scores.Algo + scores.CN + scores.COA + scores.Comp_Des + scores.DBMS + scores.Dig_Logic + scores.Eng_Math + scores.OS}, 
+          maxmark = 100
+      WHERE name = '${name}';
+    `;
+
+    await pool.query(query);
+
+    res.status(200).json({ message: "Mock test submitted and updated successfully!" });
+  } catch (error) {
+    console.error("Error processing submission:", error);
+    res.status(500).json({ message: "An error occurred while submitting." });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 3001;
