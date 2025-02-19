@@ -24,7 +24,7 @@ export default function Exam() {
       .catch((error) => console.error("Error fetching exams:", error));
   }, []);
   console.log(tests);
-
+/*
   const handleCreateTest = async () => {
     if (newTitle && newDate) {
       try {
@@ -59,6 +59,65 @@ export default function Exam() {
       toast.warn("Please enter a valid test title and date");
     }
   };
+  */
+  const handleCreateTest = async () => {
+    if (!newTitle || !newDate) {
+      toast.warn("Please enter a valid test title and date");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:3001/createexam", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          exam_name: newTitle,
+          exam_date: newDate,
+          exam_mode: newMode,
+          creator: localStorage.getItem("userName"),
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        toast.error(data.message || "Failed to create exam");
+        return;
+      }
+  
+      toast.success(data.message);
+  
+      // Ensure test is created before sending the email
+      await fetch("http://localhost:3001/send-email1", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          testName: newTitle,
+          date: newDate,
+          staffName: localStorage.getItem("userName"),
+          examMode: newMode,
+        }),
+      });
+  
+      toast.success("Email announcement sent successfully!");
+  
+      // Reset form fields and close dialog
+      setNewTitle("");
+      setNewDate("");
+      setNewMode("Online");
+      setIsDialogOpen(false);
+  
+      // Refresh tests without reloading the page
+      setTests((prevTests) => [
+        ...prevTests,
+        { exam_name: newTitle, date: newDate, mode: newMode, creator: localStorage.getItem("userName") },
+      ]);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again.");
+    }
+  };
+  
 
   const navigate = useNavigate();
   

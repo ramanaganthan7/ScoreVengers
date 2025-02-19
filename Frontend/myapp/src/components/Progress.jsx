@@ -66,7 +66,7 @@ export default function Progress() {
   }, []);
 
   // Function to get subject data for Pie Chart
-  const getSubjectData = (testId) => {
+  /*const getSubjectData = (testId) => {
     const subjects = ["eng_math", "dig_logic", "coa", "pds", "algo", "toc", "comp_des", "os", "dbms", "cn"];
 
     if (testId === "all") {
@@ -86,7 +86,45 @@ export default function Progress() {
         fill: `hsl(var(--chart-${index + 1}))`,
       }));
     }
+  };*/
+  const getSubjectData = (testId) => {
+    const subjects = [
+      "eng_math", "dig_logic", "coa", "pds", "algo",
+      "toc", "comp_des", "os", "dbms", "cn"
+    ];
+  
+    const colors = [
+      "#B22222", // Dark Fire Red (Rusty Metal)  
+      "#8B0000", // Deep Crimson (Oxidized Iron)  
+      "#4B0082", // Dark Indigo (Burnt Steel)  
+      "#2F4F4F", // Dark Slate Gray (Gunmetal)  
+      "#696969", // Dim Gray (Lead)  
+      "#FFD700", // Metallic Gold  
+      "#8B4513", // Saddle Brown (Bronze)  
+      "#708090", // Slate Gray (Titanium)  
+      "#C0C0C0", // Silver  
+      "#DAA520"  // Goldenrod (Aged Brass)  
+    ];
+    
+    
+  
+    if (testId === "all") {
+      return subjects.map((subject, index) => {
+        const total = examData.reduce((sum, test) => sum + (test.subjects[subject] || 0), 0);
+        const average = total / examData.length;
+        return { subject, value: average, fill: colors[index] };
+      });
+    } else {
+      const test = examData.find((t) => t.test === testId);
+      if (!test) return [];
+      return subjects.map((subject, index) => ({
+        subject,
+        value: test.subjects[subject] || 0,
+        fill: colors[index],
+      }));
+    }
   };
+  
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
@@ -182,10 +220,12 @@ export default function Progress() {
       )}
 
     <div>
-      {/* Floating Feedback Button */}
-      <button className="feedback-button" onClick={togglePopup}>
-        <img src={p1} alt="Feedback" className="feedback-gif" />
-      </button>
+    {role !== "admin" && (
+        <button className="feedback-button" onClick={togglePopup}>
+          <img src={p1} alt="Feedback" className="feedback-gif" />
+        </button>
+      )}
+
 
       {/* Pop-up Window */}
      
@@ -208,7 +248,9 @@ export default function Progress() {
       <p>Loading feedback...</p>
     )}
   </div>
+
 )}
+
     </div>
     </div>
   );

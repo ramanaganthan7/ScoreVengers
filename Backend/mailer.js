@@ -2,12 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 
-const recipients = [
-    "rakeshsp.cse2023@citchennai.net",
-    "ramanaganthans.cse2023@citchennai.net",
-    "ramamuthukumarans.cse2023@citchennai.net",
-    "rahuljahannathank.cse2023@citchennai.net"
-];
+
 
 async function sendMail(testName, date, studentEmails) {
     const htmlTemplatePath = path.join(__dirname, "email_template.html");

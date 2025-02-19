@@ -36,12 +36,22 @@
 }
 
 .n_greeting-text {
-    color: #4A4A4A; /* Equivalent to text-gray-800 */
+    color: #080808; /* Equivalent to text-gray-800 */
     padding: 0.5rem 0.75rem; /* px-3 py-2 */
     border-radius: 0.375rem; /* Equivalent to rounded-md */
-    font-size: 1rem; /* text-sm */
+    font-size: 1.3rem; /* text-sm */
     font-weight: 500; /* font-medium */
     transition: color 0.2s ease-in-out;
+}
+.n_greeting-name {
+    font-size: 1.5rem; /* Adjust size as needed */
+    font-weight: bold;
+    color: #e6ebed; /* Metallic Gold */
+    text-shadow: 2px 2px 5px rgba(118, 208, 216, 0.6), 0 0 10px rgba(0, 0, 0, 0.8); /* Glow effect */
+    padding: 5px 10px;
+    display: inline-block;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .n_greeting-text:hover {
