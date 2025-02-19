@@ -197,7 +197,7 @@ export default function Progress() {
       <div className="feedback-content">
         {Object.entries(feedback).map(([key, value]) => (
           <div key={key} className="feedback-item">
-            <h2 style={{ color: "blue" }}>
+            <h2  className="chatsub">
                 {key.replace(/([A-Z])/g, " $1").trim()}
               </h2>
             <p>{value}</p>
