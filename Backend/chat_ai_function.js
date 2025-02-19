@@ -40,6 +40,16 @@ async function getAIResponse(examData) {
   });
 
   userInput += `Based on this data, provide feedback for ${studentName} with the following sections:\n`;
+  /*userInput+=`Eng_Math full form is Engineering Mathematics, 
+Dig_Logic full form is Digital Logic, 
+COA full form is Computer Organization and Architecture, 
+PDS full form is Programming and Data Structures, 
+Algo full form is Algorithms, 
+TOC full form is Theory of Computation, 
+Comp_Des full form is Compiler Design, 
+OS full form is Operating Systems, 
+DBMS full form is Database Management Systems, 
+CN full form is Computer Networks,`;*/
   userInput += `Feedback: A brief summary of overall performance.\n`;
   userInput += `Areas of Improvement: Mention subjects that need more focus.\n`;
   userInput += `Motivation: Provide short encouragement to boost confidence and study strategies.\n`;
@@ -56,7 +66,14 @@ async function getAIResponse(examData) {
   // Remove any unwanted symbols or formatting from AI response
   responseText = responseText.replace(/\*/g, "").trim();
 
-  return responseText;
+  // Structure the response in JSON format
+  const structuredResponse = {
+    feedback: responseText.match(/Feedback:\s*(.*?)(?=Areas of Improvement:|$)/s)?.[1]?.trim() || "Not provided",
+    areasOfImprovement: responseText.match(/Areas of Improvement:\s*(.*?)(?=Motivation:|$)/s)?.[1]?.trim() || "Not provided",
+    motivation: responseText.match(/Motivation:\s*(.*)/s)?.[1]?.trim() || "Not provided",
+  };
+
+  return structuredResponse;
 }
 
 module.exports = getAIResponse;

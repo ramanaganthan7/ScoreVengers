@@ -12,7 +12,7 @@ export default function Progress() {
   const [selectedTest, setSelectedTest] = useState("all");
   const [examData, setExamData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [feedback, setFeedback] = useState(null);
+  const [feedback, setFeedback] = useState({});
   const [showPopup, setShowPopup] = useState(false);
 
   const location = useLocation();
@@ -22,6 +22,7 @@ export default function Progress() {
 
     if (role=='admin'){
       name = studentName;
+      
 
         toast.info(`Progress of the Student ${studentName}`, {
           autoClose: 2000, // Toast stays for 5 seconds (5000ms)
@@ -49,7 +50,8 @@ export default function Progress() {
 
           setExamData(formattedData);
           console.log(apiResponse.feedback,'from ai');
-          setFeedback(apiResponse.feedback);
+          setFeedback(apiResponse.feedback || {});
+          //setFeedback(apiResponse.feedback);
         } else {
           setExamData([]);
         }
@@ -92,7 +94,7 @@ export default function Progress() {
 
   return (
     <div className="p_container">
-            <ToastContainer position="top-center" autoClose={3000} />
+    <ToastContainer position="top-center" autoClose={3000} />
 
       {/* Dropdown Selection */}
       <div className="w-full max-w-[200px] relative">
@@ -186,20 +188,27 @@ export default function Progress() {
       </button>
 
       {/* Pop-up Window */}
+     
       {showPopup && (
-        <div className="popup">
-          <button className="close-btn" onClick={togglePopup}>×</button>
-          <h3>Feedback</h3>
-          {feedback ? (
-            <div className="feedback-content">
-              <p> {feedback}</p>
-              
-            </div>
-          ) : (
-            <p>Loading feedback...</p>
-          )}
-        </div>
-      )}
+  <div className="popup">
+    <button className="close-btn" onClick={togglePopup}>×</button>
+    {/*<h3>Feedback</h3>*/}
+    {feedback && Object.keys(feedback).length > 0 ? (
+      <div className="feedback-content">
+        {Object.entries(feedback).map(([key, value]) => (
+          <div key={key} className="feedback-item">
+            <h2 style={{ color: "blue" }}>
+                {key.replace(/([A-Z])/g, " $1").trim()}
+              </h2>
+            <p>{value}</p>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p>Loading feedback...</p>
+    )}
+  </div>
+)}
     </div>
     </div>
   );

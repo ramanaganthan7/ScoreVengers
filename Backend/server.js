@@ -3,6 +3,8 @@ const { Pool } = require("pg");
 const cors = require("cors");
 const sendMail = require("./mailer");
 const getAIResponse = require("./chat_ai_function");
+const sendAnouncement = require("./examnotify");
+
 
 
 const app = express();
@@ -227,7 +229,7 @@ app.get("/students", async (req, res) => {
     }
   });
   const examData = [];
-  /*
+/*
 app.get('/exam-results/:name', async (req, res) => {
   const { name } = req.params;
   
@@ -317,6 +319,23 @@ app.post("/send-email", async (req, res) => {
   } catch (error) {
     console.error("Email sending error:", error);
     res.status(500).json({ message: "Error sending email", error: error.toString() });
+  }
+});
+app.post("/send-email1", async (req, res) => {
+  const { testName, date, staffName, examMode } = req.body;
+  console.log(testName,date,staffName,examMode);
+
+  if (!testName || !date || !staffName || !examMode) {
+      return res.status(400).json({ message: "Test Name, Date, Staff Name, and Exam Mode are required!" });
+  }
+
+  try {
+      await sendAnouncement(testName, date, staffName, examMode);
+      console.log("done anouncement");
+      res.status(200).json({ message: "Email sent successfully!" });
+  } catch (error) {
+      console.error("Email sending error:", error);
+      res.status(500).json({ message: "Error sending email", error: error.toString() });
   }
 });
 
