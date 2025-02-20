@@ -4,7 +4,7 @@ const cors = require("cors");
 const sendMail = require("./mailer");
 const getAIResponse = require("./chat_ai_function");
 const sendAnouncement = require("./examnotify");
-
+const sendFeedbackEmail = require("./feedback.js");
 
 
 const app = express();
@@ -389,6 +389,21 @@ app.post("/submit-mocktest", async (req, res) => {
   } catch (error) {
     console.error("Error processing submission:", error);
     res.status(500).json({ message: "An error occurred while submitting." });
+  }
+});
+app.post("/send-email3", async (req, res) => {
+  const { teacherName, feedback } = req.body;
+
+  if (!teacherName || !feedback) {
+      return res.status(400).json({ message: "Teacher Name and Feedback are required!" });
+  }
+
+  try {
+      await sendFeedbackEmail(teacherName, feedback);
+      res.status(200).json({ message: "Feedback email sent successfully!" });
+  } catch (error) {
+      console.error("Email sending error:", error);
+      res.status(500).json({ message: "Error sending email", error: error.toString() });
   }
 });
 

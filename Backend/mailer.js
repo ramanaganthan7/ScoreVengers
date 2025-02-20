@@ -2,8 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
 
-
-
 async function sendMail(testName, date, studentEmails) {
     const htmlTemplatePath = path.join(__dirname, "email_template.html");
     let htmlContent = fs.readFileSync(htmlTemplatePath, "utf-8");
@@ -23,7 +21,7 @@ async function sendMail(testName, date, studentEmails) {
     const mailOptions = {
         from: "rakeshsp330@gmail.com",
         to: studentEmails.join(","),
-        subject: "HTML Email Test",
+        subject: "GATE MOCK TEST Result Notification",
         html: htmlContent
     };
 

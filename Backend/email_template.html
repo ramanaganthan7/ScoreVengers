@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Notification</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GATE MOCK TEST Result Notification</title>
 </head>
-<body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
-  <h1>📢 GATE MOCK TEST Notification</h1>
-  <p><strong>Test Name:</strong> {{TEST_NAME}}</p>
-  <p><strong>Date:</strong> {{DATE}}</p>
-  <p>This is an automated email notification .</p>
-  <p>Kindly View Your respective result and progress on ScoreVengers</p>
+<body style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f4; color: #333; max-width: 600px; margin: 0 auto;">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <tr>
+            <td style="background-color: #4a90e2; padding: 20px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0;">📢 GATE MOCK TEST Result Notification</h1>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px;">
+                <p style="font-size: 18px; font-weight: bold; color: #555; margin-bottom: 10px;">
+                    <strong>Test Name:</strong> {{TEST_NAME}}
+                </p>
+                <p style="font-size: 18px; font-weight: bold; color: #555; margin-bottom: 20px;">
+                    <strong>Date:</strong> {{DATE}}
+                </p>
+                <p style="font-size: 16px; color: #777; margin-bottom: 10px;">
+                    This is an automated email notification.
+                </p>
+                <p style="font-size: 16px; color: #777; margin-bottom: 20px;">
+                    Kindly view your respective result and progress on ScoreVengers.
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td style="background-color: #4a90e2; color: #ffffff; text-align: center; padding: 10px; font-size: 12px;">
+                © 2025 ScoreVengers. All rights reserved.
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
