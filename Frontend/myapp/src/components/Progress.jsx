@@ -7,12 +7,15 @@ import "../styles/progress.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import p1 from "../assets/ai.gif";
+import { Textarea } from "@/components/ui/textarea"
+import { MessageCircle, Send } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function Progress() {
   const [selectedTest, setSelectedTest] = useState("all");
   const [examData, setExamData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [feedback, setFeedback] = useState({});
+  const [feedbackt, setFeedbackt] = useState();
   const [showPopup, setShowPopup] = useState(false);
 
   const location = useLocation();
@@ -24,11 +27,12 @@ export default function Progress() {
       name = studentName;
       
 
-        toast.info(`Progress of the Student ${studentName}`, {
-          autoClose: 2000, // Toast stays for 5 seconds (5000ms)
-          position: "top-right", // Optional: Change position if needed
-          pauseOnHover: true, // Optional: Pause on hover
-        });
+/*toast.info(`Progress of the Student ${studentName}`, {
+        autoClose: 2000,
+        position: "top-right",
+        pauseOnHover: true,
+      });
+      */
       }
         
 
@@ -129,11 +133,46 @@ export default function Progress() {
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+  const [isOpen, setIsOpen] = useState(false)
+  const [feedback, setFeedback] = useState("")
+
+
+const handleSubmit = async () => {
+    if (!name || !feedbackt) {
+        toast.warn("Please enter both teacher name and feedback.");
+        return;
+    }
+
+    try {
+        const response = await fetch("http://localhost:3001/send-email3", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                teacherName: localStorage.getItem("userName"),
+                feedback: feedbackt,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            toast.success("Feedback sent successfully!");
+            setFeedback(""); // Clear feedback input
+            setIsOpen(false); // Close modal if applicable
+        } else {
+            toast.error(`Error: ${data.message || "Failed to send feedback."}`);
+        }
+    } catch (error) {
+        toast.error("Network error. Please try again.");
+    }
+};
+
 
   return (
     <div className="p_container">
     <ToastContainer position="top-center" autoClose={3000} />
-
       {/* Dropdown Selection */}
       <div className="w-full max-w-[200px] relative">
         <Select value={selectedTest} onValueChange={setSelectedTest} defaultValue="all">
@@ -250,6 +289,38 @@ export default function Progress() {
   </div>
 
 )}
+ {role == "admin" && (
+<div>
+<Button className="fixed bottom-4 right-4 rounded-full p-4" onClick={() => setIsOpen(true)}>
+        <MessageCircle className="h-6 w-6" />
+      </Button>
+
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-2xl font-bold mb-4">Teacher Feedback</h2>
+            <Textarea
+              placeholder="Enter your feedback here..."
+              value={feedbackt}
+              onChange={(e) => setFeedbackt(e.target.value)}
+              className="w-full mb-4"
+              rows={5}
+            />
+            <div className="flex justify-end">
+              <Button variant="outline" className="mr-2" onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit}>
+                <Send className="h-4 w-4 mr-2" />
+                Send Feedback
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+</div>
+ )}
+
 
     </div>
     </div>
