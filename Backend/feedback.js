@@ -1,9 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
-
-const emailSender = "rakeshsp330@gmail.com"; // Sender's email
-const emailPassword = "tlug hlob hbka fojg"; // App password from Google
+const emailSender = "rakeshsp330@gmail.com";
+const emailPassword = "tlug hlob hbka fojg";
 
 const emailRecipients = [
     "rakeshsp.cse2023@citchennai.net",

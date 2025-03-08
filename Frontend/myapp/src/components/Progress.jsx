@@ -22,26 +22,12 @@ export default function Progress() {
     const studentName = location.state?.studentName || "Unknown";
     const role = location.state?.role || "User"; // Get role
     let name= localStorage.getItem("userName");
-
     if (role=='admin'){
       name = studentName;
-      
-
-/*toast.info(`Progress of the Student ${studentName}`, {
-        autoClose: 2000,
-        position: "top-right",
-        pauseOnHover: true,
-      });
-      */
       }
-        
-
   useEffect(() => {
     // Show loading toast
     toast.loading("Loading data...");
-    
-    
-
     fetch(`http://localhost:3001/exam-results/${name}`)
       .then((res) => res.json())
       .then((apiResponse) => {
@@ -55,7 +41,6 @@ export default function Progress() {
           setExamData(formattedData);
           console.log(apiResponse.feedback,'from ai');
           setFeedback(apiResponse.feedback || {});
-          //setFeedback(apiResponse.feedback);
         } else {
           setExamData([]);
         }
@@ -91,6 +76,7 @@ export default function Progress() {
       }));
     }
   };*/
+
   const getSubjectData = (testId) => {
     const subjects = [
       "eng_math", "dig_logic", "coa", "pds", "algo",
@@ -136,13 +122,11 @@ export default function Progress() {
   const [isOpen, setIsOpen] = useState(false)
   const [feedback, setFeedback] = useState("")
 
-
 const handleSubmit = async () => {
     if (!name || !feedbackt) {
         toast.warn("Please enter both teacher name and feedback.");
         return;
     }
-
     try {
         const response = await fetch("http://localhost:3001/send-email3", {
             method: "POST",
@@ -159,8 +143,8 @@ const handleSubmit = async () => {
 
         if (response.ok) {
             toast.success("Feedback sent successfully!");
-            setFeedback(""); // Clear feedback input
-            setIsOpen(false); // Close modal if applicable
+            setFeedback(""); 
+            setIsOpen(false); 
         } else {
             toast.error(`Error: ${data.message || "Failed to send feedback."}`);
         }
@@ -168,7 +152,6 @@ const handleSubmit = async () => {
         toast.error("Network error. Please try again.");
     }
 };
-
 
   return (
     <div className="p_container">

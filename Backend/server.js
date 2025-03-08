@@ -6,7 +6,6 @@ const getAIResponse = require("./chat_ai_function");
 const sendAnouncement = require("./examnotify");
 const sendFeedbackEmail = require("./feedback.js");
 
-
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
 app.use(cors());
@@ -291,7 +290,13 @@ app.get("/exam-results/:name", async (req, res) => {
     }
 
     // Get AI-generated feedback
-    const aiFeedback = await getAIResponse({ success: true, exams: allExamData });
+    let aiFeedback;
+    try {
+      aiFeedback = await getAIResponse({ success: true, exams: allExamData });
+    } catch (error) {
+      console.error("Error generating AI feedback:", error);
+      aiFeedback = "Error generating feedback.";
+    }
 
     res.json({ success: true, exams: allExamData, feedback: aiFeedback });
 

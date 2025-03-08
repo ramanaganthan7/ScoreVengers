@@ -6,13 +6,12 @@ import "../styles/students.css";
 export default function Students() {
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
-
   // Fetch student data from the backend
   useEffect(() => {
     fetch("http://localhost:3001/students") // Update the URL if needed
       .then((response) => response.json())
       .then((data) => setStudents(data))
-      .catch((error) => console.error("Error fetching students:", error));
+      .catch((error) => console.error("Error fetching students: ", error));
   }, []);
 
   // Handle row click
@@ -36,7 +35,7 @@ export default function Students() {
             <TableBody>
               {students.length > 0 ? (
                 students.map((student, index) => (
-                  <TableRow key={student.regno} className="s_row" onClick={() => handleRowClick(student.name)} style={{ cursor: "pointer" }}>
+                  <TableRow key={student.regno} className="s_row" onClick={ () => handleRowClick(student.name) } style={{ cursor: "pointer" }}>
                     <TableCell className="s_cell">{index + 1}</TableCell>
                     <TableCell className="s_cell">{student.regno}</TableCell>
                     <TableCell className="s_cell">{student.name}</TableCell>
