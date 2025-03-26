@@ -5,6 +5,7 @@ const sendMail = require("./mailer");
 const getAIResponse = require("./chat_ai_function");
 const sendAnouncement = require("./examnotify");
 const sendFeedbackEmail = require("./feedback.js");
+//import getAIResponse from "./chat_ai_function";
 
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
@@ -301,7 +302,7 @@ app.get("/exam-results/:name", async (req, res) => {
     res.json({ success: true, exams: allExamData, feedback: aiFeedback });
 
   } catch (error) {
-    console.error("Error fetching exam results:", error);
+    console.error("Error fetching exam results:", error);n
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });

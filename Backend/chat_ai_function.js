@@ -1,27 +1,9 @@
-const { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
-const API_KEY = "AIzaSyBW5Ax951uAsja11fcbbFj9GiefMf1kyU4"; // Replace with your actual API key
-const MODEL_NAME = "gemini-pro";
+const API_KEY = "AIzaSyCgwIsUqCRA2Jm4-cJWL1I2yIcfgfoy4Kk"; // Replace with your actual API key
 
 // Function to generate AI feedback
 async function getAIResponse(examData) {
-  const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
-  const generationConfig = {
-    temperature: 0.9,
-    topK: 1,
-    topP: 1,
-    maxOutputTokens: 1000,
-  };
-
-  const safetySettings = [
-    {
-      category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-    },
-  ];
-
   // Extract student details
   const studentName = examData.exams[0].data.name;
   const regNo = examData.exams[0].data.regno;
@@ -40,33 +22,23 @@ async function getAIResponse(examData) {
   });
 
   userInput += `Based on this data, provide feedback for ${studentName} with the following sections:\n`;
-  /*userInput+=`Eng_Math full form is Engineering Mathematics, 
-Dig_Logic full form is Digital Logic, 
-COA full form is Computer Organization and Architecture, 
-PDS full form is Programming and Data Structures, 
-Algo full form is Algorithms, 
-TOC full form is Theory of Computation, 
-Comp_Des full form is Compiler Design, 
-OS full form is Operating Systems, 
-DBMS full form is Database Management Systems, 
-CN full form is Computer Networks,`;*/
   userInput += `Feedback: A brief summary of overall performance.\n`;
   userInput += `Areas of Improvement: Mention subjects that need more focus.\n`;
   userInput += `Motivation: Provide short encouragement to boost confidence and study strategies.\n`;
 
-  const chat = model.startChat({
-    generationConfig,
-    safetySettings,
-    history: [{ role: "user", parts: [{ text: userInput }] }],
+  // Initialize GoogleGenAI API
+  const ai = new GoogleGenAI({ apiKey: API_KEY });
+
+  // Generate AI response
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: [{ role: "user", parts: [{ text: userInput }] }],
   });
-
-  const result = await chat.sendMessage(userInput);
-  let responseText = result.response.text();
-
-  // Remove any unwanted symbols or formatting from AI response
+  
+  let responseText = response?.text?.trim() || "Response not generated";
   responseText = responseText.replace(/\*/g, "").trim();
 
-  // Structure the response in JSON format
+  // Extract structured response using regex
   const structuredResponse = {
     feedback: responseText.match(/Feedback:\s*(.*?)(?=Areas of Improvement:|$)/s)?.[1]?.trim() || "Not provided",
     areasOfImprovement: responseText.match(/Areas of Improvement:\s*(.*?)(?=Motivation:|$)/s)?.[1]?.trim() || "Not provided",
