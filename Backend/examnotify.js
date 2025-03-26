@@ -6,7 +6,9 @@ const recipients = [
     "rakeshsp.cse2023@citchennai.net",
     "ramanaganthans.cse2023@citchennai.net",
     "ramamuthukumarans.cse2023@citchennai.net",
-    "rahuljahannathank.cse2023@citchennai.net"
+    "rahuljahannathank.cse2023@citchennai.net",
+    "sresandhyak.cse2023@citchenai.net",
+
 ];
 
 async function sendMail(testName, date, staffName, examMode) {
@@ -22,13 +24,13 @@ async function sendMail(testName, date, staffName, examMode) {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "rakeshsp330@gmail.com",
-            pass: "tlug hlob hbka fojg"
+            user: "ramanaganthan2005@gmail.com",
+            pass: "eldd jxdg mexv nukd"
         }
     });
 
     const mailOptions = {
-        from: "rakeshsp330@gmail.com",
+        from: "ramanaganthan2005@gmail.com",
         to: recipients.join(","),
         subject: "Exam Announcement",
         html: htmlContent

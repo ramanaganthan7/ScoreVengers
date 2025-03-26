@@ -13,13 +13,13 @@ async function sendMail(testName, date, studentEmails) {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "rakeshsp330@gmail.com",
-            pass: "tlug hlob hbka fojg"
+            user: "ramanaganthan2005@gmail.com",
+            pass: "eldd jxdg mexv nukd"
         }
     });
 
     const mailOptions = {
-        from: "rakeshsp330@gmail.com",
+        from: "ramanaganthan2005@gmail.com",
         to: studentEmails.join(","),
         subject: "GATE MOCK TEST Result Notification",
         html: htmlContent

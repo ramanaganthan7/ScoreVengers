@@ -1,14 +1,15 @@
 const fs = require("fs");
 const path = require("path");
 const nodemailer = require("nodemailer");
-const emailSender = "rakeshsp330@gmail.com";
-const emailPassword = "tlug hlob hbka fojg";
+const emailSender = "ramanaganthan2005@gmail.com";
+const emailPassword = "eldd jxdg mexv nukd";
 
 const emailRecipients = [
     "rakeshsp.cse2023@citchennai.net",
     "ramanaganthans.cse2023@citchennai.net",
     "ramamuthukumarans.cse2023@citchennai.net",
-    "rahuljahannathank.cse2023@citchennai.net"
+    "rahuljahannathank.cse2023@citchennai.net",
+    "sresandhyak.cse2023@citchenai.net",
 ];
 
 async function sendFeedbackEmail(teacherName, feedback) {
