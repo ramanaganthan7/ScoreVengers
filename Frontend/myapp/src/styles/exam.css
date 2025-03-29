@@ -1,3 +1,8 @@
 .exam-con{
     min-width: 800px;
 }
+@media  (max-width: 730px) {
+    .exam-con{
+        min-width: 100%;
+    }
+}

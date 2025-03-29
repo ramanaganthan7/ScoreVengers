@@ -4,3 +4,12 @@
 .card_o{
     min-height: 300px;
 }
+@media  (max-width: 730px) {
+    .exam-cont{
+        min-width: 100%;
+    }
+    .card_o{
+        min-height: 200px;
+    }
+    
+}

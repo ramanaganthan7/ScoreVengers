@@ -91,3 +91,48 @@
     margin: 0 auto;
   }
   
+  @media (max-width: 450px) {
+    .e_container {
+      padding: 10px;
+    }
+
+    .e_card {
+      padding: 10px;
+    }
+
+    .e_header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .e_title {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .e_date {
+      font-size: 14px;
+    }
+
+    .e_buttonGroup {
+      margin-top: 10px;
+    }
+
+    .e_tableContainer {
+      overflow-x: auto;
+    }
+
+    .e_table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .e_tableHeader {
+      background-color: #e5e7eb;
+    }
+
+    .e_tableHead {
+      padding: 8px
+    
+  }
+}

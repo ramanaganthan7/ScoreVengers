@@ -1,8 +1,8 @@
-.n_navbar {
+.n_navbar_omg {
     position: fixed; /* Keeps the navbar at the top */
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     background-color: rgb(159, 154, 154);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000; /* Ensures navbar stays above other elements */
@@ -61,4 +61,26 @@
 /* Prevents content from going under the navbar */
 body {
     padding-top: 4rem; /* Matches the navbar height */
+}
+@media(max-width: 350px) {
+    .n_greeting-text {
+        padding: 0.5rem 0.5rem; /* px-3 py-2 */
+        border-radius: 0.375rem; /* Equivalent to rounded-md */
+        font-size: 1rem; /* text-sm */
+        font-weight: 400;
+    }
+    .n_nav-content {
+        justify-content: space-between;
+        padding: 0 0.1rem;
+    }
+    .n_greeting-name {
+        font-size: 0.6rem; /* Adjust size as needed */
+        font-weight: bold;
+        color: #e6ebed; /* Metallic Gold */
+        text-shadow: 2px 2px 5px rgba(118, 208, 216, 0.6), 0 0 10px rgba(0, 0, 0, 0.8); /* Glow effect */
+        padding: 1px 2px;
+    }
+    .hea{
+        font-size: 1rem;
+    }
 }

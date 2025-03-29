@@ -6,19 +6,45 @@ const getAIResponse = require("./chat_ai_function");
 const sendAnouncement = require("./examnotify");
 const sendFeedbackEmail = require("./feedback.js");
 //import getAIResponse from "./chat_ai_function";
-
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
 app.use(cors());
 
 // PostgreSQL connection setup
-const pool = new Pool({
+/*const pool = new Pool({
     user: "postgres",
     host: "localhost",
     database: "ScoreVengers",
     password: "#arcade#",
     port: 2005,
 });
+*/
+
+const pool = new Pool({
+  user: "postgres",
+  host: "scorevengers.cbi282eee2no.eu-north-1.rds.amazonaws.com",
+  database: "postgres",
+  password: "#Arcade77#",
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false, // Set to true if using an SSL certificate
+  },
+});
+
+//test of deployed db
+async function fetchStudents() {
+  try {
+    const res = await pool.query("SELECT * FROM student");
+    console.log("Student Details:");
+    res.rows.forEach((student) => {
+      console.log(`Reg No: ${student.regno}, Name: ${student.name}, Email: ${student.email}, Phone: ${student.phoneno}`);
+    });
+  } catch (err) {
+    console.error("Error fetching student details:", err);
+  } 
+}
+
+fetchStudents();
 
 // Function to test database connection
 async function testDB() {
@@ -77,6 +103,7 @@ app.post("/login", async (req, res) => {
         console.error("Error in login:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
+   
 });
 
 //exams page for showing the tests 
@@ -228,42 +255,7 @@ app.get("/students", async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   });
-  const examData = [];
-/*
-app.get('/exam-results/:name', async (req, res) => {
-  const { name } = req.params;
   
-  try {
-      const examQuery = 'SELECT exam_name FROM exam';
-      const examResults = await pool.query(examQuery);
-      const examNames = examResults.rows.map(row => row.exam_name);
-
-      let allExamData = [];
-      
-
-      for (const examName of examNames) {
-          const query = `SELECT * FROM ${examName} WHERE name = $1`;
-          const result = await pool.query(query, [name]);
-
-          if (result.rows.length > 0) {
-              allExamData.push({
-                  exam_name: examName,
-                  data: result.rows[0]  
-              });
-          }
-      }
-      examData.length = 0;
-      examData.push(...allExamData);
-
-      res.json({ success: true, exams: allExamData });
-
-  } catch (error) {
-      console.error('Error fetching exam results:', error);
-      res.status(500).json({ success: false, message: 'Internal Server Error' });
-  }
-});
-*/
-
 app.get("/exam-results/:name", async (req, res) => {
   const { name } = req.params;
 
@@ -302,7 +294,7 @@ app.get("/exam-results/:name", async (req, res) => {
     res.json({ success: true, exams: allExamData, feedback: aiFeedback });
 
   } catch (error) {
-    console.error("Error fetching exam results:", error);n
+    console.error("Error fetching exam results:", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });

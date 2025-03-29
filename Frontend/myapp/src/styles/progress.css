@@ -65,3 +65,28 @@
     font-weight: 600; /* Medium bold */
 
   }
+
+
+  @media (max-width: 425px) {
+    .popup {
+      width: 90%;
+      max-height: 80%;
+      bottom: 20px;
+      right: 20px;
+    }
+    .feedback-button {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .popup h3 {
+      font-size: 16px;
+    }
+    .close-btn {
+      font-size: 16px;
+    }
+    .chatsub{
+      font-size: 16px;
+    }
+    
+  }

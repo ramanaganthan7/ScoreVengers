@@ -4,11 +4,11 @@ import React from "react";
 const Navbar = ({ name }) => {
 
   return (
-    <nav className="n_navbar">
+    <nav className="n_navbar_omg">
       <div className="n_container">
         <div className="n_nav-content">
           <div className="n_logo-container">
-          <span className="text-2xl font-bold tracking-wide text-[rgb(0,0,128)]">
+          <span className="text-2xl font-bold tracking-wide text-[rgb(0,0,128)]  hea">
           ScoreVengers
         </span>
           </div>

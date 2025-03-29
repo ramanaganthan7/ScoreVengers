@@ -6,8 +6,7 @@ const recipients = [
     "rakeshsp.cse2023@citchennai.net",
     "ramanaganthans.cse2023@citchennai.net",
     "ramamuthukumarans.cse2023@citchennai.net",
-    "rahuljahannathank.cse2023@citchennai.net",
-    "sresandhyak.cse2023@citchenai.net",
+    "sresandhyak.cse2023@citchennai.net",
 
 ];
 

@@ -184,9 +184,9 @@ export default function Exam() {
                 <p className="text-muted-foreground">Mode: {test.mode}</p>
                 <p className="text-muted-foreground">Creator: {test.creator}</p>
               </CardContent>
-              <CardFooter className="flex gap-2 mt-auto">
-                <Button variant="outline" className="flex-1" onClick={() => handle_update(test.exam_name)}>Update Marks</Button>
-                <Button className="flex-1" onClick={() => handle_email(test.exam_name, test.date)}>Publish Result</Button>
+              <CardFooter className="flex flex-col gap-2 mt-auto">
+                <Button variant="outline" className="flex-1 w-full" onClick={() => handle_update(test.exam_name)}>Update Marks</Button>
+                <Button className="flex-1 w-full" onClick={() => handle_email(test.exam_name, test.date)}>Publish Result</Button>
               </CardFooter>
             </Card>
           ))}
