@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import "../styles/students.css";
+import config from "../config";
 
 export default function Students() {
   const [students, setStudents] = useState([]);
   const navigate = useNavigate();
   // Fetch student data from the backend
   useEffect(() => {
-    fetch("http://localhost:3001/students") // Update the URL if needed
+    fetch(`${config.API_BASE_URL}/students`) // Update the URL if needed
       .then((response) => response.json())
       .then((data) => setStudents(data))
       .catch((error) => console.error("Error fetching students: ", error));

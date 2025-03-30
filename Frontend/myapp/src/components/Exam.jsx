@@ -9,6 +9,7 @@ import "../styles/exam.css";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import config from "../config.js";
 
 export default function Exam() {
   const [tests, setTests] = useState([]);
@@ -18,48 +19,12 @@ export default function Exam() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:3001/exams")
+    fetch(`${config.API_BASE_URL}/exams`)
       .then((res) => res.json())
       .then((data) => setTests(data))
       .catch((error) => console.error("Error fetching exams:", error));
   }, []);
   console.log(tests);
-/*
-  const handleCreateTest = async () => {
-    if (newTitle && newDate) {
-      try {
-        const response = await fetch("http://localhost:3001/createexam", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            exam_name: newTitle,
-            exam_date: newDate,
-            exam_mode: newMode,
-            creator: localStorage.getItem("userName"),
-          }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          setIsDialogOpen(false);
-          toast.success(data.message);
-          setNewTitle("");
-          setNewDate("");
-          setNewMode("Online"); // Reset mode to default
-          setTimeout(() => window.location.reload(), 1500);
-        } else {
-          toast.error(data.message || "Failed to create exam");
-        }
-      } catch (error) {
-        console.error("Error creating test:", error);
-        toast.error("An error occurred. Please try again.");
-      }
-    } else {
-      toast.warn("Please enter a valid test title and date");
-    }
-  };
-  */
   const handleCreateTest = async () => {
     if (!newTitle || !newDate) {
       toast.warn("Please enter a valid test title and date");
@@ -67,7 +32,7 @@ export default function Exam() {
     }
   
     try {
-      const response = await fetch("http://localhost:3001/createexam", {
+      const response = await fetch(`${config.API_BASE_URL}/createexam`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -88,7 +53,7 @@ export default function Exam() {
       toast.success(data.message);
   
       // Ensure test is created before sending the email
-      await fetch("http://localhost:3001/send-email1", {
+      await fetch(`${config.API_BASE_URL}/send-email1`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -129,7 +94,7 @@ export default function Exam() {
     const toastId = toast.loading("Sending result notifications...");
   
     try {
-      const response = await fetch("http://localhost:3001/send-email", {
+      const response = await fetch(`${config.API_BASE_URL}/send-email`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

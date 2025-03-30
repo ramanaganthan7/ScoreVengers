@@ -10,6 +10,7 @@ import p1 from "../assets/ai.gif";
 import { Textarea } from "@/components/ui/textarea"
 import { MessageCircle, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import config from "../config";
 
 export default function Progress() {
   const [selectedTest, setSelectedTest] = useState("all");
@@ -28,7 +29,7 @@ export default function Progress() {
   useEffect(() => {
     // Show loading toast
     toast.loading("Loading data...");
-    fetch(`http://localhost:3001/exam-results/${name}`)
+    fetch(`${config.API_BASE_URL}/exam-results/${name}`)
       .then((res) => res.json())
       .then((apiResponse) => {
         if (apiResponse.success && apiResponse.exams.length > 0) {
@@ -54,28 +55,6 @@ export default function Progress() {
       });
   }, []);
 
-  // Function to get subject data for Pie Chart
-  /*const getSubjectData = (testId) => {
-    const subjects = ["eng_math", "dig_logic", "coa", "pds", "algo", "toc", "comp_des", "os", "dbms", "cn"];
-
-    if (testId === "all") {
-      // Calculate average marks for each subject
-      return subjects.map((subject, index) => {
-        const total = examData.reduce((sum, test) => sum + (test.subjects[subject] || 0), 0);
-        const average = total / examData.length;
-        return { subject, value: average, fill: `hsl(var(--chart-${index + 1}))` };
-      });
-    } else {
-      // Get subject marks for selected test
-      const test = examData.find((t) => t.test === testId);
-      if (!test) return [];
-      return subjects.map((subject, index) => ({
-        subject,
-        value: test.subjects[subject] || 0,
-        fill: `hsl(var(--chart-${index + 1}))`,
-      }));
-    }
-  };*/
 
   const getSubjectData = (testId) => {
     const subjects = [
@@ -128,7 +107,7 @@ const handleSubmit = async () => {
         return;
     }
     try {
-        const response = await fetch("http://localhost:3001/send-email3", {
+        const response = await fetch(`${config.API_BASE_URL}/send-email3`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

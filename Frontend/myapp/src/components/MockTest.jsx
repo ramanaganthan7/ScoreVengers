@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation } from "react-router-dom";
 import "../styles/mocktest.css";
+import config from "../config";
 
 export default function MockTest() {
   const [subjects, setSubjects] = useState([]);
@@ -20,7 +21,7 @@ export default function MockTest() {
   const examName = location.state?.exam_name || "Mock Test";
 
   useEffect(() => {
-    fetch("http://localhost:3001/conduct")
+    fetch(`${config.API_BASE_URL}/conduct`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched data:", data);
@@ -86,7 +87,7 @@ export default function MockTest() {
     const name = localStorage.getItem("userName");
 
     try {
-      const response = await fetch("http://localhost:3001/submit-mocktest", {
+      const response = await fetch(`${config.API_BASE_URL}/submit-mocktest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name ,examName, scores }),

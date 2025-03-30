@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import config from "../config.js";  
 export default function Entry() {
   const [isEditing, setIsEditing] = useState(false);
   const location = useLocation();
@@ -23,7 +24,7 @@ export default function Entry() {
 
     setLoading(true);
     setError("");
-    fetch(`http://localhost:3001/particular/${examName}`)
+    fetch(`${config.API_BASE_URL}/particular/${examName}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) {
@@ -55,7 +56,7 @@ export default function Entry() {
     toast.info("Updating...");
   
     try {
-      const response = await fetch("http://localhost:3001/update-marks", {
+      const response = await fetch(`${config.API_BASE_URL}/update-marks`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

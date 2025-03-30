@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import "../styles/online.css";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 
 export default function OnlineTest() {
   const [mockTests, setMockTests] = useState([]);
@@ -10,7 +11,7 @@ export default function OnlineTest() {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const response = await fetch("http://localhost:3001/online"); // Update with your backend URL
+        const response = await fetch(`${config.API_BASE_URL}/online`); // Update with your backend URL
         if (!response.ok) {
           throw new Error("Failed to fetch exams");
         }

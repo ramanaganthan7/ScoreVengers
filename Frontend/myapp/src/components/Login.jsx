@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import config from "../config.js";
 
 export default function Login({setName}) {
   const [showPassword, setShowPassword] = useState(false);
@@ -50,9 +50,10 @@ export default function Login({setName}) {
       toast.error("Please select a role");
       return;
     }
-
+  
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      console.log(`${config.API_BASE_URL}/login`);
+      const response = await fetch(`${config.API_BASE_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, role }),
