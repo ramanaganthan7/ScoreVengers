@@ -5,6 +5,8 @@ const sendMail = require("./mailer");
 const getAIResponse = require("./chat_ai_function");
 const sendAnouncement = require("./examnotify");
 const sendFeedbackEmail = require("./feedback.js");
+require("dotenv").config();
+
 //import getAIResponse from "./chat_ai_function";
 const app = express();
 app.use(express.json()); // Middleware to parse JSON
@@ -19,49 +21,48 @@ app.use(cors());
     port: 2005,
 });
 */
+console.log("Database Password:", process.env.DB_PASSWORD); // Debugging
+
 
 const pool = new Pool({
   user: "postgres",
   host: "scorevengers.cbi282eee2no.eu-north-1.rds.amazonaws.com",
   database: "postgres",
-  password: "#Arcade77#",
+  password: process.env.DB_PASSWORD,
   port: 5432,
   ssl: {
     rejectUnauthorized: false, // Set to true if using an SSL certificate
   },
 });
 
-//test of deployed db
-async function fetchStudents() {
-  try {
-    const res = await pool.query("SELECT * FROM student");
-    console.log("Student Details:");
-    res.rows.forEach((student) => {
-      console.log(`Reg No: ${student.regno}, Name: ${student.name}, Email: ${student.email}, Phone: ${student.phoneno}`);
-    });
-  } catch (err) {
-    console.error("Error fetching student details:", err);
-  } 
-}
 
-fetchStudents();
-
-// Function to test database connection
-async function testDB() {
-    try {
-        const temp = await pool.query("SELECT * FROM student");
-        console.log(temp.rows); // Log the fetched data
-    } catch (error) {
-        console.error("Database connection error:", error);
-    }
-}
-
-// Call the test function
 //testDB();
 
 app.get("/", (req, res) => {
     res.status(200).json("Server is active");
 });
+
+//test aws db api
+async function fetchStudents() {
+  try {
+    const res = await pool.query("SELECT * FROM student");
+    return res.rows; // Return the fetched data
+  } catch (err) {
+    console.error("Error fetching student details:", err);
+    throw err; // Rethrow the error to handle it in the route
+  }
+}
+
+app.get("/db", async (req, res) => {
+  try {
+    results = await fetchStudents();
+    console.log(results);
+    res.status(200).json(results);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch students" });
+  }
+});
+
 
 app.post("/login", async (req, res) => {
     const { email, password, role } = req.body;
