@@ -62,7 +62,7 @@
 body {
     padding-top: 4rem; /* Matches the navbar height */
 }
-@media(max-width: 350px) {
+@media(max-width: 450px) {
     .n_greeting-text {
         padding: 0.5rem 0.5rem; /* px-3 py-2 */
         border-radius: 0.375rem; /* Equivalent to rounded-md */
