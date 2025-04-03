@@ -124,7 +124,7 @@ app.post("/login", async (req, res) => {
       } else if (role === "student") {
           userData = {
               email: "ramanaganthans.cse2023@citchennai.net",
-              name: "RAMANAGANTHAN S",
+              name: "RAMANA GANTHAN",
               role: "student"
           };
       } else {
