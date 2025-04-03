@@ -39,6 +39,7 @@ const pool = new Pool({
 //testDB();
 
 app.get("/", (req, res) => {
+   let b ="#Arcade77#"
     res.status(200).json("Server is active");
 });
 
@@ -63,7 +64,7 @@ app.get("/db", async (req, res) => {
   }
 });
 
-
+/*
 app.post("/login", async (req, res) => {
     const { email, password, role } = req.body;
 
@@ -90,7 +91,7 @@ app.post("/login", async (req, res) => {
             if (user.password === password) {
                 return res.status(201).json({ 
                     message: `Login successful as ${role}`, 
-                    role, 
+                    role,  
                     name: user.name // Sending name to frontend
                 });
             } else {
@@ -106,6 +107,42 @@ app.post("/login", async (req, res) => {
     }
    
 });
+*/
+app.post("/login", async (req, res) => {
+  const { role } = req.body;
+
+  try {
+      let userData = {};
+
+      // Assign predefined email and name based on the role
+      if (role === "admin") {
+          userData = {
+              email: "ramanaganthan2005@gmail.com",
+              name: "RAM",
+              role: "admin"
+          };
+      } else if (role === "student") {
+          userData = {
+              email: "ramanaganthans.cse2023@citchennai.net",
+              name: "RAMANAGANTHAN S",
+              role: "student"
+          };
+      } else {
+          return res.status(400).json({ message: "Invalid role" });
+      }
+
+      // Auto-login without checking credentials
+      return res.status(201).json({ 
+          message: `Auto-login successful as ${role}`, 
+          ...userData 
+      });
+
+  } catch (error) {
+      console.error("Error in login:", error);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 //exams page for showing the tests 
 // Get all exams
